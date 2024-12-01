@@ -1,7 +1,7 @@
-import java.util.*;
+package roadnetwork;
 
-// Classe représentant une arrête
-class Edge {
+// Classe représentant une arête
+public class Edge {
     private final Node from;
     private final Node to;
     private double travelTime; // Temps de trajet
@@ -30,6 +30,6 @@ class Edge {
 
     @Override
     public String toString() {
-        return "Edge{" + "from=" + from + ", to=" + to + ", travelTime=" + travelTime + '}';
+        return "roadnetwork.Edge{" + "from=" + from + ", to=" + to + ", travelTime=" + travelTime + '}';
     }
 }

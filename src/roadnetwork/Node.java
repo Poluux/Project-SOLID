@@ -1,7 +1,9 @@
-import java.util.*;
+package roadnetwork;
+
+import java.util.Objects;
 
 // Classe représentant un nœud
-class Node {
+public class Node {
     private final String id; // Identifiant unique du nœud
 
     public Node(String id) {
@@ -27,6 +29,6 @@ class Node {
 
     @Override
     public String toString() {
-        return "Node{" + "id='" + id + '\'' + '}';
+        return "roadnetwork.Node{" + "id='" + id + '\'' + '}';
     }
 }
