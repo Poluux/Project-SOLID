@@ -17,23 +17,14 @@ public class Main {
         graph.addNode(nodeC);
         graph.addNode(nodeD);
 
-        // Ajout des arêtes via la Factory
-        graph.addEdge(nodeA, nodeB, 10.0); // A -> B
-        graph.addEdge(nodeA, nodeC, 15.0); // A -> C
-        graph.addEdge(nodeB, nodeD, 20.0); // B -> D
-        graph.addEdge(nodeC, nodeD, 25.0); // C -> D
+        // Ajout des arêtes
+        graph.addEdge(nodeA, nodeB, 10.0);
+        graph.addEdge(nodeA, nodeC, 15.0);
+        graph.addEdge(nodeB, nodeD, 20.0);
+        graph.addEdge(nodeC, nodeD, 25.0);
 
-        // Afficher le graphe complet
-        System.out.println(graph);
-
-        // Afficher les connexions spécifiques
-        System.out.println("Edges from A: " + graph.getEdges(nodeA));
-        System.out.println("Edges from B: " + graph.getEdges(nodeB));
-        System.out.println("Edges from C: " + graph.getEdges(nodeC));
-        System.out.println("Edges from D: " + graph.getEdges(nodeD));
-
-        // Exemple d'utilisation de la stratégie
-        PathFindingStrategy pathFinding = new DijkstraPathFindingStrategy();
-        pathFinding.findPath(graph, nodeA, nodeD);
+        // Utilisation de Dijkstra pour trouver le plus court chemin
+        PathFindingStrategy dijkstra = new DijkstraPathFindingStrategy();
+        dijkstra.findPath(graph, nodeA, nodeD);
     }
 }

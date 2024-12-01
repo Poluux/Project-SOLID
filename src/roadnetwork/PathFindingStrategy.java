@@ -1,6 +1,8 @@
 package roadnetwork;
 
-// Strategy Pattern: Préparation pour des algorithmes de calcul
-interface PathFindingStrategy {
+// Interface représentant une stratégie de calcul de chemin
+public interface PathFindingStrategy {
+
+    // Méthode à implémenter pour trouver le chemin entre deux nœuds
     void findPath(Graph graph, Node start, Node end);
 }
