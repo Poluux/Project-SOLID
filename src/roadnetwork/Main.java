@@ -1,5 +1,4 @@
 package roadnetwork;
-
 import java.util.Scanner;
 
 public class Main {
@@ -7,48 +6,99 @@ public class Main {
         // Initialisation du graphe via la classe GraphInitializer
         Graph graph = GraphInitializer.initializeGraph();
 
-        // Affichage des informations du graphe
-        System.out.println("Voici les nœuds disponibles dans le graphe :");
-        for (Node node : graph.getNodes()) {
-            System.out.println("- " + node.getId());
-        }
-
         // Scanner pour récupérer les entrées utilisateur
         Scanner scanner = new Scanner(System.in);
+        boolean running = true;
 
-        // Demander le point de départ
-        System.out.print("\nVeuillez entrer le point de départ : ");
-        String startName = scanner.nextLine();
+        // Menu principal
+        while (running) {
+            System.out.println("\n=== Menu ===");
+            System.out.println("1. Trouver le chemin le plus court entre deux villes");
+            System.out.println("2. Modifier le temps de trajet entre deux villes");
+            System.out.println("3. Réinitialiser les temps de trajet par défaut");
+            System.out.println("4. Quitter");
+            System.out.print("Votre choix : ");
 
-        // Demander le point d'arrivée
-        System.out.print("Veuillez entrer le point d'arrivée : ");
-        String endName = scanner.nextLine();
+            int choice = scanner.nextInt();
+            scanner.nextLine(); // Consomme la ligne restante
 
-        // Vérifier si les nœuds existent dans le graphe
-        Node startNode = null;
-        Node endNode = null;
+            switch (choice) {
+                case 1:
+                    // Trouver le chemin le plus court
+                    System.out.print("\nEntrez le point de départ : ");
+                    String startName = scanner.nextLine();
 
-        for (Node node : graph.getNodes()) {
-            if (node.getId().equalsIgnoreCase(startName)) {
-                startNode = node;
+                    System.out.print("Entrez le point d'arrivée : ");
+                    String endName = scanner.nextLine();
+
+                    Node startNode = getNodeByName(graph, startName);
+                    Node endNode = getNodeByName(graph, endName);
+
+                    if (startNode == null || endNode == null) {
+                        System.out.println("Erreur : L'une des villes saisies n'existe pas.");
+                    } else {
+                        PathFindingStrategy dijkstra = new DijkstraPathFindingStrategy();
+                        // Appeler findPath et récupérer la chaîne de résultat
+                        String result = dijkstra.findPath(graph, startNode, endNode);
+                        // Afficher le résultat
+                        System.out.println(result);
+                    }
+                    break;
+
+                case 2:
+                    // Modifier le temps de trajet
+                    System.out.print("\nEntrez la ville de départ : ");
+                    String fromName = scanner.nextLine();
+
+                    System.out.print("Entrez la ville d'arrivée : ");
+                    String toName = scanner.nextLine();
+
+                    System.out.print("Entrez le nouveau temps de trajet (en minutes) : ");
+                    double newTravelTime = scanner.nextDouble();
+
+                    Node fromNode = getNodeByName(graph, fromName);
+                    Node toNode = getNodeByName(graph, toName);
+
+                    if (fromNode == null || toNode == null) {
+                        System.out.println("Erreur : L'une des villes saisies n'existe pas.");
+                    } else {
+                        boolean updated = graph.updateTravelTime(fromNode, toNode, newTravelTime);
+                        if (updated) {
+                            System.out.println("Le temps de trajet a été mis à jour avec succès.");
+                        } else {
+                            System.out.println("Erreur : Le trajet entre ces villes n'existe pas.");
+                        }
+                    }
+                    break;
+
+                case 3:
+                    // Réinitialiser les temps de trajet
+                    graph.resetTravelTimes();
+                    System.out.println("Tous les temps de trajet ont été réinitialisés à leurs valeurs par défaut.");
+                    break;
+
+                case 4:
+                    // Quitter le programme
+                    running = false;
+                    System.out.println("Au revoir !");
+                    break;
+
+                default:
+                    System.out.println("Choix invalide. Veuillez réessayer.");
             }
-            if (node.getId().equalsIgnoreCase(endName)) {
-                endNode = node;
-            }
-        }
-
-        // Si un des nœuds n'existe pas, afficher un message d'erreur
-        if (startNode == null || endNode == null) {
-            System.out.println("\nErreur : Le point de départ ou d'arrivée n'existe pas dans le graphe.");
-            System.out.println("Veuillez vérifier les nœuds disponibles et réessayer.");
-        } else {
-            // Utilisation de Dijkstra pour trouver le plus court chemin
-            PathFindingStrategy dijkstra = new DijkstraPathFindingStrategy();
-            System.out.println("\nCalcul du chemin le plus court...");
-            dijkstra.findPath(graph, startNode, endNode);
         }
 
         // Fermeture du scanner
         scanner.close();
+    }
+
+    // Méthode utilitaire pour récupérer un nœud par son nom
+    private static Node getNodeByName(Graph graph, String nodeName) {
+        for (Node node : graph.getNodes()) {
+            if (node.getId().equalsIgnoreCase(nodeName)) {
+                return node;
+            }
+        }
+        return null;
     }
 }
