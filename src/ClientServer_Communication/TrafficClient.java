@@ -16,7 +16,8 @@ public class TrafficClient {
                 try {
                     String serverMessage;
                     while ((serverMessage = serverIn.readLine()) != null) {
-                        System.out.println("Server: " + serverMessage);
+                            System.out.println("Server: " + serverMessage);
+                            System.out.print("Enter command: ");
                     }
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -24,6 +25,7 @@ public class TrafficClient {
             }).start();
 
             System.out.println("Connected to traffic management server.");
+
             String userInput;
             while ((userInput = userInputReader.readLine()) != null) {
                 serverOut.println(userInput); // Send command to server

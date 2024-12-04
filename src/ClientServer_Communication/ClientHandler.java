@@ -2,6 +2,7 @@ package ClientServer_Communication;
 
 import ClientServer_Communication.Request.RequestHandler;
 import ClientServer_Communication.Request.RequestHandlerFactory;
+import roadnetwork.Graph;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -12,10 +13,12 @@ import java.net.Socket;
 public class ClientHandler implements Runnable{
     private final Socket clientSocket;
     private final int clientId;
+    private Graph graph;
 
-    public ClientHandler(Socket socket, int clientId) {
+    public ClientHandler(Socket socket, int clientId, Graph graph) {
         this.clientSocket = socket;
         this.clientId = clientId;
+        this.graph = graph;
     }
 
     @Override
@@ -27,9 +30,9 @@ public class ClientHandler implements Runnable{
 
             System.out.println("Client-" + clientId + " is now active.");
 
-            String clientInput;
-            while ((clientInput = in.readLine()) != null) {
-                String [] parts = clientInput.split(" ",2);
+            String request;
+            while ((request = in.readLine()) != null) {
+                String [] parts = request.split(" ",2);
                 String requestType = parts[0];
                 String requestBody = parts.length > 1 ? parts[1] : "";
                 RequestHandler handler = RequestHandlerFactory.getHandler(requestType);
