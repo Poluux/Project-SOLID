@@ -5,9 +5,9 @@ import java.util.*;
 // Implémentation de la stratégie de calcul de chemin basée sur Dijkstra
 public class DijkstraPathFindingStrategy implements PathFindingStrategy {
 
-    // Calcule le plus court chemin entre deux nœuds dans le graphe
+    // Calcule le plus court chemin entre deux nœuds dans le graphe et retourne une description sous forme de chaîne
     @Override
-    public void findPath(Graph graph, Node start, Node end) {
+    public String findPath(Graph graph, Node start, Node end) {
         // Map pour stocker la distance minimale de chaque nœud au nœud de départ
         Map<Node, Double> distances = new HashMap<>();
         // Map pour stocker le prédécesseur de chaque nœud dans le chemin
@@ -56,12 +56,19 @@ public class DijkstraPathFindingStrategy implements PathFindingStrategy {
             path.add(0, start);
         }
 
-        // Afficher le chemin ou indiquer qu'il n'y a pas de chemin
+        // Construire le résultat sous forme de chaîne
+        StringBuilder result = new StringBuilder();
         if (path.isEmpty() || !path.get(0).equals(start)) {
-            System.out.println("No path found from " + start + " to " + end);
+            result.append("No path found from ").append(start.getId()).append(" to ").append(end.getId());
         } else {
-            System.out.println("Shortest path from " + start + " to " + end + ": " + path);
-            System.out.println("Total distance: " + distances.get(end));
+            result.append("Shortest path from ").append(start.getId()).append(" to ").append(end.getId()).append(": ");
+            for (Node node : path) {
+                result.append(node.getId()).append(" ");
+            }
+            result.append("\nTotal distance: ").append(distances.get(end)).append(" min");
         }
+
+        // Retourner le chemin comme chaîne
+        return result.toString();
     }
 }

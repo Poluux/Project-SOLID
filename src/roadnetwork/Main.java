@@ -38,7 +38,10 @@ public class Main {
                         System.out.println("Erreur : L'une des villes saisies n'existe pas.");
                     } else {
                         PathFindingStrategy dijkstra = new DijkstraPathFindingStrategy();
-                        dijkstra.findPath(graph, startNode, endNode);
+                        // Appeler findPath et récupérer la chaîne de résultat
+                        String result = dijkstra.findPath(graph, startNode, endNode);
+                        // Afficher le résultat
+                        System.out.println(result);
                     }
                     break;
 
