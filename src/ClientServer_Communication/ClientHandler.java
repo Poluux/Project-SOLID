@@ -35,9 +35,9 @@ public class ClientHandler implements Runnable{
                 String [] parts = request.split(" ",2);
                 String requestType = parts[0];
                 String requestBody = parts.length > 1 ? parts[1] : "";
-                RequestHandler handler = RequestHandlerFactory.getHandler(requestType);
-                String response = handler.handle(requestBody);
-                out.println(response);
+                RequestHandler handler = RequestHandlerFactory.getHandler(requestType, graph);
+               // String response = handler.handle(requestBody);
+               // out.println(response);
             }
         } catch (IOException e) {
             e.printStackTrace();
