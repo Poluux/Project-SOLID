@@ -1,30 +1,54 @@
 package roadnetwork;
 
-// Classe principale avec logique de démonstration
+import java.util.Scanner;
+
 public class Main {
     public static void main(String[] args) {
-        Graph graph = new Graph();
+        // Initialisation du graphe via la classe GraphInitializer
+        Graph graph = GraphInitializer.initializeGraph();
 
-        // Création des nœuds
-        Node nodeA = new Node("A");
-        Node nodeB = new Node("B");
-        Node nodeC = new Node("C");
-        Node nodeD = new Node("D");
+        // Affichage des informations du graphe
+        System.out.println("Voici les nœuds disponibles dans le graphe :");
+        for (Node node : graph.getNodes()) {
+            System.out.println("- " + node.getId());
+        }
 
-        // Ajout des nœuds au graphe
-        graph.addNode(nodeA);
-        graph.addNode(nodeB);
-        graph.addNode(nodeC);
-        graph.addNode(nodeD);
+        // Scanner pour récupérer les entrées utilisateur
+        Scanner scanner = new Scanner(System.in);
 
-        // Ajout des arêtes
-        graph.addEdge(nodeA, nodeB, 10.0);
-        graph.addEdge(nodeA, nodeC, 15.0);
-        graph.addEdge(nodeB, nodeD, 20.0);
-        graph.addEdge(nodeC, nodeD, 25.0);
+        // Demander le point de départ
+        System.out.print("\nVeuillez entrer le point de départ : ");
+        String startName = scanner.nextLine();
 
-        // Utilisation de Dijkstra pour trouver le plus court chemin
-        PathFindingStrategy dijkstra = new DijkstraPathFindingStrategy();
-        dijkstra.findPath(graph, nodeA, nodeD);
+        // Demander le point d'arrivée
+        System.out.print("Veuillez entrer le point d'arrivée : ");
+        String endName = scanner.nextLine();
+
+        // Vérifier si les nœuds existent dans le graphe
+        Node startNode = null;
+        Node endNode = null;
+
+        for (Node node : graph.getNodes()) {
+            if (node.getId().equalsIgnoreCase(startName)) {
+                startNode = node;
+            }
+            if (node.getId().equalsIgnoreCase(endName)) {
+                endNode = node;
+            }
+        }
+
+        // Si un des nœuds n'existe pas, afficher un message d'erreur
+        if (startNode == null || endNode == null) {
+            System.out.println("\nErreur : Le point de départ ou d'arrivée n'existe pas dans le graphe.");
+            System.out.println("Veuillez vérifier les nœuds disponibles et réessayer.");
+        } else {
+            // Utilisation de Dijkstra pour trouver le plus court chemin
+            PathFindingStrategy dijkstra = new DijkstraPathFindingStrategy();
+            System.out.println("\nCalcul du chemin le plus court...");
+            dijkstra.findPath(graph, startNode, endNode);
+        }
+
+        // Fermeture du scanner
+        scanner.close();
     }
 }
