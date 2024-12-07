@@ -33,6 +33,10 @@ public class ClientHandler implements Runnable{
 
             String request;
             while ((request = in.readLine()) != null) {
+                if ("EXIT".equalsIgnoreCase(request)) {
+                    out.println("Deconnexion. Thanks for utilizing our service.");
+                    break;
+                }
                 String [] parts = request.split(" ",2);
                 String requestType = parts[0];
                 String requestBody = parts.length > 1 ? parts[1] : "";
@@ -42,6 +46,14 @@ public class ClientHandler implements Runnable{
             }
         } catch (IOException e) {
             e.printStackTrace();
+        } finally {
+            try {
+                // Close client socket
+                clientSocket.close();
+                System.out.println("Client-" + clientId + " has been disconnected.");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 }

@@ -33,8 +33,20 @@ public class TrafficClient {
 
             String userInput;
             while ((userInput = userInputReader.readLine()) != null) {
+                // If the client enters "EXIT", send this command to the server
+                if ("EXIT".equalsIgnoreCase(userInput)) {
+                    serverOut.println(userInput);
+
+                    String serverResponse = serverIn.readLine();
+                    if (serverResponse != null)
+                        System.out.println("Server: " + serverResponse);
+                    break;
+                }
                 serverOut.println(userInput); // Send command to server
             }
+
+            socket.close();
+            System.out.println("Connection closed");
         } catch (IOException e) {
             e.printStackTrace();
         }
