@@ -4,6 +4,8 @@ import roadnetwork.Graph;
 import roadnetwork.Node;
 import roadnetwork.DijkstraPathFindingStrategy;
 
+import java.util.Scanner;
+
 public class PathCalculationHandler implements RequestHandler {
     private Graph graph;  // Vous devrez initialiser le graphe ici
     private DijkstraPathFindingStrategy pathFindingStrategy;
@@ -14,7 +16,14 @@ public class PathCalculationHandler implements RequestHandler {
     }
 
     @Override
-    public void handle(String request) {
+    public String handle(String request) {
+     /*   Scanner scanner = new Scanner(System.in);
+        System.out.println("Entrer la demande sous ce format: NodeName1:NodeName2");
+        String userInput = scanner.nextLine();  */
+        String answer = null;
+
+    //    String trueRequest = request.substring(6);
+
         // Ici, nous allons supposer que `request` contient une commande dans le format "startNode:endNode"
         String[] nodes = request.split(":");
         if (nodes.length == 2) {
@@ -22,13 +31,15 @@ public class PathCalculationHandler implements RequestHandler {
             Node end = findNodeByName(nodes[1]);
 
             if (start != null && end != null) {
-                pathFindingStrategy.findPath(graph, start, end);
+                answer = pathFindingStrategy.findPath(graph, start, end);
             } else {
-                System.out.println("Invalid node names.");
+                answer = "Invalid node names.";
             }
         } else {
-            System.out.println("Invalid request format. Expected format: startNode:endNode");
+            answer= "Invalid request format. Expected format: startNode:endNode";
         }
+
+        return answer;
     }
 
     private Node findNodeByName(String name) {

@@ -1,6 +1,7 @@
 package ClientServer_Communication;
 
 import roadnetwork.Graph;
+import roadnetwork.GraphInitializer;
 
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -9,7 +10,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class Server {
     private static final AtomicInteger clientCounter = new AtomicInteger(1);
-    private static Graph graph = new Graph();
+    private static Graph graph = GraphInitializer.initializeGraph();
     public static void main(String[] args) {
         try {
             ServerSocket server = new ServerSocket(45000);

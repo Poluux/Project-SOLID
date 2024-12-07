@@ -1,5 +1,5 @@
 package ClientServer_Communication.Request;
 
 public interface RequestHandler {
-    void handle(String request);
+    String handle(String request);
 }
