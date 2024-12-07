@@ -16,8 +16,13 @@ public class TrafficClient {
                 try {
                     String serverMessage;
                     while ((serverMessage = serverIn.readLine()) != null) {
-                            System.out.println("Server: " + serverMessage);
+                        if (serverMessage.equals("END_OF_RESPONSE")) {
+                            // Fin de la réponse, affichez l'invite
                             System.out.print("Enter command: ");
+                        } else {
+                            // Affiche le message du serveur
+                            System.out.println("Server: " + serverMessage);
+                        }
                     }
                 } catch (IOException e) {
                     e.printStackTrace();

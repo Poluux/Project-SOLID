@@ -68,6 +68,9 @@ public class DijkstraPathFindingStrategy implements PathFindingStrategy {
             result.append("\nTotal distance: ").append(distances.get(end)).append(" min");
         }
 
+        // Ajouter END_OF_RESPONSE pour indiquer la fin
+        result.append("\nEND_OF_RESPONSE");
+
         // Retourner le chemin comme chaîne
         return result.toString();
     }

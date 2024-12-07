@@ -27,6 +27,7 @@ public class ClientHandler implements Runnable{
              PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true)) {
 
             out.println("Welcome! You are Client-" + clientId);
+            out.println("END_OF_RESPONSE");
 
             System.out.println("Client-" + clientId + " is now active.");
 
