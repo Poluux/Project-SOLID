@@ -4,11 +4,9 @@ import roadnetwork.Graph;
 import roadnetwork.Node;
 import roadnetwork.DijkstraPathFindingStrategy;
 
-import java.util.Scanner;
-
 public class PathCalculationHandler implements RequestHandler {
-    private Graph graph;  // Vous devrez initialiser le graphe ici
-    private DijkstraPathFindingStrategy pathFindingStrategy;
+    private final Graph graph;  // Vous devrez initialiser le graphe ici
+    private final DijkstraPathFindingStrategy pathFindingStrategy;
 
     public PathCalculationHandler(Graph graph) {
         this.graph = graph;
@@ -17,7 +15,7 @@ public class PathCalculationHandler implements RequestHandler {
 
     @Override
     public String handle(String request) {
-        String answer = null;
+        String answer;
 
         // Ici, nous allons supposer que `request` contient une commande dans le format "startNode:endNode"
         String[] nodes = request.split(":");
