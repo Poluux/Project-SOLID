@@ -5,8 +5,8 @@ import roadnetwork.Node;
 import roadnetwork.DijkstraPathFindingStrategy;
 
 public class PathCalculationHandler implements RequestHandler {
-    private final Graph graph;  // Vous devrez initialiser le graphe ici
-    private final DijkstraPathFindingStrategy pathFindingStrategy;
+    private Graph graph;  // Vous devrez initialiser le graphe ici
+    private DijkstraPathFindingStrategy pathFindingStrategy;
 
     public PathCalculationHandler(Graph graph) {
         this.graph = graph;
