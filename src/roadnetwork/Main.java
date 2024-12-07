@@ -1,4 +1,7 @@
 package roadnetwork;
+import com.sun.security.jgss.GSSUtil;
+
+import java.sql.SQLOutput;
 import java.util.Scanner;
 
 public class Main {
@@ -9,6 +12,7 @@ public class Main {
         // Scanner pour récupérer les entrées utilisateur
         Scanner scanner = new Scanner(System.in);
         boolean running = true;
+        graph.printGraph();
 
         // Menu principal
         while (running) {
