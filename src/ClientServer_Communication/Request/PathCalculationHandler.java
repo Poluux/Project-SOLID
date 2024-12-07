@@ -17,12 +17,7 @@ public class PathCalculationHandler implements RequestHandler {
 
     @Override
     public String handle(String request) {
-     /*   Scanner scanner = new Scanner(System.in);
-        System.out.println("Entrer la demande sous ce format: NodeName1:NodeName2");
-        String userInput = scanner.nextLine();  */
         String answer = null;
-
-    //    String trueRequest = request.substring(6);
 
         // Ici, nous allons supposer que `request` contient une commande dans le format "startNode:endNode"
         String[] nodes = request.split(":");
