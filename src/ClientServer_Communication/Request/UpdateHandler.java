@@ -11,34 +11,53 @@ public class UpdateHandler implements RequestHandler {
 
     @Override
     public String handle(String request) {
-        String answer;
-        // Requête au format : "startNode:endNode:newDistance"
-        String[] parts = request.split(":");
-        if (parts.length != 3) {
-            answer = "Invalid request format. Expected format: startNode:endNode:newDistance";
+        String answer = "";
+
+        // Vérifier si la requête contient au moins 3 `:` séparés par des espaces
+        String[] parts = request.split(":", 4); // Limite à 4 parties pour éviter de scinder le commentaire
+        if (parts.length < 3) {
+            return "Invalid request format. Expected format: startNode:endNode:time reason\nEND_OF_RESPONSE";
         }
 
+        // Extraire les trois premiers champs
         String startName = parts[0];
         String endName = parts[1];
-        double newDistance=0;
+
+        String[] distanceCommSeparator = parts[2].split(" ",2);
+        String distanceValue = distanceCommSeparator[0];
+        String reason = distanceCommSeparator[1].trim();
+
+        // Vérification de la validité du nombre
+        double newDistance;
         try {
-            newDistance = Double.parseDouble(parts[2]);
+            newDistance = Double.parseDouble(distanceValue);
         } catch (NumberFormatException e) {
-            answer = "Invalid distance value. It must be a number.";
+            return "Invalid distance value. It must be a valid number.\nEND_OF_RESPONSE";
         }
 
+        // Vérification de l'existence des nœuds
         Node start = findNodeByName(startName);
         Node end = findNodeByName(endName);
 
         if (start == null || end == null) {
-            answer = "One or both nodes not found.";
+            if (start == null && end == null) {
+                return "Both start and end nodes not found in the graph.\nEND_OF_RESPONSE";
+            } else if (start == null) {
+                return "Start node '" + startName + "' not found in the graph.\nEND_OF_RESPONSE";
+            } else {
+                return "End node '" + endName + "' not found in the graph.\nEND_OF_RESPONSE";
+            }
         }
 
-        boolean updated = graph.updateTravelTime(start, end, newDistance);
-         answer = updated ? "Travel time updated successfully." : "Edge not found between the specified nodes.";
-         answer += "\nEND_OF_RESPONSE";
+        // Tentative de mise à jour du temps de trajet
+        boolean updated = graph.updateTravelTime(start, end, newDistance, reason);
+        if (updated) {
+            answer = "Travel time updated successfully. Reason: " + reason;
+        } else {
+            answer = "Edge not found between '" + startName + "' and '" + endName + "'.";
+        }
 
-         return answer;
+        return answer + "\nEND_OF_RESPONSE";
     }
 
     private Node findNodeByName(String name) {
