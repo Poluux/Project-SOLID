@@ -1,5 +1,7 @@
 package ClientServer_Communication;
 
+import ClientServer_Communication.Request.GraphRequestProcessor;
+import ClientServer_Communication.Request.RequestProcessor;
 import roadnetwork.Graph;
 import roadnetwork.GraphInitializer;
 
@@ -20,8 +22,10 @@ public class Server {
                 int clientId = clientCounter.getAndIncrement();
                 System.out.println("New client connected: Client-" + clientId);
 
+                RequestProcessor requestProcessor = new GraphRequestProcessor(graph);
+
                 // Passes the ID to ClientHandler for personalization
-                new Thread(new ClientHandler(clientSocket, clientId, graph)).start();
+                new Thread(new ClientHandler(clientSocket, clientId, requestProcessor, graph)).start();
             }
         } catch (IOException e) {
             e.printStackTrace();
