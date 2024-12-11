@@ -1,7 +1,9 @@
 package ClientServer_Communication;
 
+import ClientServer_Communication.Request.GraphRequestProcessor;
 import ClientServer_Communication.Request.RequestHandler;
 import ClientServer_Communication.Request.RequestHandlerFactory;
+import ClientServer_Communication.Request.RequestProcessor;
 import roadnetwork.Graph;
 
 import java.io.BufferedReader;
@@ -13,11 +15,13 @@ import java.net.Socket;
 public class ClientHandler implements Runnable{
     private final Socket clientSocket;
     private final int clientId;
+    private final RequestProcessor requestProcessor;
     private Graph graph;
 
-    public ClientHandler(Socket socket, int clientId, Graph graph) {
+    public ClientHandler(Socket socket, int clientId,RequestProcessor requestProcessor , Graph graph) {
         this.clientSocket = socket;
         this.clientId = clientId;
+        this.requestProcessor = requestProcessor;
         this.graph = graph;
     }
 
@@ -37,11 +41,9 @@ public class ClientHandler implements Runnable{
                     out.println("Deconnexion. Thanks for utilizing our service.");
                     break;
                 }
-                String [] parts = request.split(" ",2);
-                String requestType = parts[0];
-                String requestBody = parts.length > 1 ? parts[1] : "";
-                RequestHandler handler = RequestHandlerFactory.getHandler(requestType, graph);
-                String response = handler.handle(requestBody);
+
+                String response = requestProcessor.process(request);
+
                 out.println(response);
             }
         } catch (IOException e) {

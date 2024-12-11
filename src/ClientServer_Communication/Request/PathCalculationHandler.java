@@ -3,10 +3,11 @@ package ClientServer_Communication.Request;
 import roadnetwork.Graph;
 import roadnetwork.Node;
 import roadnetwork.DijkstraPathFindingStrategy;
+import roadnetwork.PathFindingStrategy;
 
 public class PathCalculationHandler implements RequestHandler {
     private Graph graph;  // Vous devrez initialiser le graphe ici
-    private DijkstraPathFindingStrategy pathFindingStrategy;
+    private PathFindingStrategy pathFindingStrategy;
 
     public PathCalculationHandler(Graph graph) {
         this.graph = graph;
