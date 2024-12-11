@@ -33,6 +33,8 @@ public class PathCalculationHandler implements RequestHandler {
             answer= "Invalid request format. Expected format: startNode:endNode";
         }
 
+        answer += "\nEND_OF_RESPONSE";
+
         return answer;
     }
 
