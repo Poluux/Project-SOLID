@@ -29,10 +29,11 @@ public class Graph {
     }
 
     // Met à jour le temps de trajet entre deux nœuds
-    public boolean updateTravelTime(Node from, Node to, double newTravelTime) {
+    public boolean updateTravelTime(Node from, Node to, double newTravelTime, String changeReason) {
         for (Edge edge : adjacencyList.get(from)) {
             if (edge.getTo().equals(to)) {
                 edge.setTravelTime(newTravelTime);
+                edge.setChangeReason(changeReason);
                 return true; // Mise à jour réussie
             }
         }

@@ -13,15 +13,19 @@ public class UpdateHandler implements RequestHandler {
     public String handle(String request) {
         String answer = "";
 
-        // Requête au format : "startNode:endNode:newDistance"
-        String[] parts = request.split(":");
-        if (parts.length != 3) {
-            return "Invalid request format. Expected format: startNode:endNode:newDistance\nEND_OF_RESPONSE";
+        // Vérifier si la requête contient au moins 3 `:` séparés par des espaces
+        String[] parts = request.split(":", 4); // Limite à 4 parties pour éviter de scinder le commentaire
+        if (parts.length < 3) {
+            return "Invalid request format. Expected format: startNode:endNode:time reason\nEND_OF_RESPONSE";
         }
 
+        // Extraire les trois premiers champs
         String startName = parts[0];
         String endName = parts[1];
-        String distanceValue = parts[2];
+
+        String[] distanceCommSeparator = parts[2].split(" ",2);
+        String distanceValue = distanceCommSeparator[0];
+        String reason = distanceCommSeparator[1].trim();
 
         // Vérification de la validité du nombre
         double newDistance;
@@ -46,12 +50,14 @@ public class UpdateHandler implements RequestHandler {
         }
 
         // Tentative de mise à jour du temps de trajet
-        boolean updated = graph.updateTravelTime(start, end, newDistance);
+        boolean updated = graph.updateTravelTime(start, end, newDistance, reason);
         if (updated) {
-            return "Travel time updated successfully.\nEND_OF_RESPONSE";
+            answer = "Travel time updated successfully. Reason: " + reason;
         } else {
-            return "Edge not found between '" + startName + "' and '" + endName + "'.\nEND_OF_RESPONSE";
+            answer = "Edge not found between '" + startName + "' and '" + endName + "'.";
         }
+
+        return answer + "\nEND_OF_RESPONSE";
     }
 
     private Node findNodeByName(String name) {

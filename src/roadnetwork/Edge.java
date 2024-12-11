@@ -5,6 +5,11 @@ public class Edge {
     private final Node from; // Nœud source
     private final Node to;   // Nœud destination
     private double travelTime; // Temps de trajet entre les deux nœuds
+    private String changeReason;
+
+    public void setChangeReason(String changeReason) {
+        this.changeReason = changeReason;
+    }
 
     // Constructeur : Initialise une arête avec les nœuds source/destination et le temps de trajet
     public Edge(Node from, Node to, double travelTime) {
