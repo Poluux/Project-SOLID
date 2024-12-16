@@ -2,7 +2,10 @@ package ClientServer_Communication;
 
 import javax.swing.*;
 import java.awt.*;
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.net.Socket;
 
 public class TrafficClientGUI extends JFrame {
@@ -29,8 +32,7 @@ public class TrafficClientGUI extends JFrame {
         add(clientLabel, BorderLayout.NORTH);
 
         // Panneau central avec les boutons PATH et UPDATE
-        JPanel buttonPanel = new JPanel();
-        buttonPanel.setLayout(new GridLayout(2, 1, 10, 10));
+        JPanel buttonPanel = new JPanel(new GridLayout(2, 1, 10, 10));
         pathButton = new JButton("PATH");
         updateButton = new JButton("UPDATE");
         buttonPanel.add(pathButton);
@@ -61,7 +63,13 @@ public class TrafficClientGUI extends JFrame {
                 try {
                     String serverMessage;
                     while ((serverMessage = serverIn.readLine()) != null) {
-                        System.out.println("Server: " + serverMessage); // Debugging
+                        if (serverMessage.equals("END_OF_RESPONSE")) {
+                            // Terminer la lecture
+                            System.out.println("End of response received.");
+                        } else {
+                            // Afficher le message serveur dans la console (debug)
+                            System.out.println("Server: " + serverMessage);
+                        }
                     }
                 } catch (IOException e) {
                     if (!socket.isClosed()) {
@@ -109,17 +117,26 @@ public class TrafficClientGUI extends JFrame {
             String start = (String) startCity.getSelectedItem();
             String end = (String) endCity.getSelectedItem();
             String command = "PATH " + start + ":" + end;
+
             if (!command.isEmpty()) {
                 serverOut.println(command);
                 pathResponseArea.append("You: " + command + "\n");
-                try {
-                    String serverResponse = serverIn.readLine();
-                    if (serverResponse != null) {
-                        pathResponseArea.append("Server: " + serverResponse + "\n");
+
+                new Thread(() -> {
+                    try {
+                        String serverResponse;
+                        StringBuilder responseBuilder = new StringBuilder();
+                        while ((serverResponse = serverIn.readLine()) != null) {
+                            if (serverResponse.equals("END_OF_RESPONSE")) {
+                                break;
+                            }
+                            responseBuilder.append(serverResponse).append("\n");
+                        }
+                        SwingUtilities.invokeLater(() -> pathResponseArea.append("Server: " + responseBuilder.toString()));
+                    } catch (IOException ex) {
+                        ex.printStackTrace();
                     }
-                } catch (IOException ex) {
-                    ex.printStackTrace();
-                }
+                }).start();
             }
         });
 
@@ -164,18 +181,27 @@ public class TrafficClientGUI extends JFrame {
             String start = (String) startCity.getSelectedItem();
             String end = (String) endCity.getSelectedItem();
             String newTime = newTimeField.getText();
-            String command = "UPDATE " + start + ":" + end + ":" + newTime + " UpdateReason";
+            String command = "UPDATE " + start + ":" + end + ":" + newTime;
+
             if (!command.isEmpty()) {
                 serverOut.println(command);
                 updateResponseArea.append("You: " + command + "\n");
-                try {
-                    String serverResponse = serverIn.readLine();
-                    if (serverResponse != null) {
-                        updateResponseArea.append("Server: " + serverResponse + "\n");
+
+                new Thread(() -> {
+                    try {
+                        String serverResponse;
+                        StringBuilder responseBuilder = new StringBuilder();
+                        while ((serverResponse = serverIn.readLine()) != null) {
+                            if (serverResponse.equals("END_OF_RESPONSE")) {
+                                break;
+                            }
+                            responseBuilder.append(serverResponse).append("\n");
+                        }
+                        SwingUtilities.invokeLater(() -> updateResponseArea.append("Server: " + responseBuilder.toString()));
+                    } catch (IOException ex) {
+                        ex.printStackTrace();
                     }
-                } catch (IOException ex) {
-                    ex.printStackTrace();
-                }
+                }).start();
             }
         });
 
@@ -198,7 +224,7 @@ public class TrafficClientGUI extends JFrame {
         SwingUtilities.invokeLater(() -> {
             TrafficClientGUI clientGUI = new TrafficClientGUI();
             clientGUI.setVisible(true);
-            clientGUI.connectToServer("localhost", 45000); // Adresse et port du serveur
+            clientGUI.connectToServer("localhost", 45000);
         });
     }
 }
