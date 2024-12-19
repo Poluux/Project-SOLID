@@ -25,7 +25,12 @@ public class UpdateHandler implements RequestHandler {
 
         String[] distanceCommSeparator = parts[2].split(" ",2);
         String distanceValue = distanceCommSeparator[0];
-        String reason = distanceCommSeparator[1].trim();
+        String reason;
+
+        if (distanceCommSeparator.length > 1)
+            reason = distanceCommSeparator[1].trim();
+        else
+            reason = "no reason given";
 
         // Vérification de la validité du nombre
         double newDistance;
