@@ -12,7 +12,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class Server {
     private static final AtomicInteger clientCounter = new AtomicInteger(1);
-    private static Graph graph = GraphInitializer.initializeGraph();
+    public static Graph graph = GraphInitializer.initializeGraph();
     public static void main(String[] args) {
         try {
             ServerSocket server = new ServerSocket(45000);
