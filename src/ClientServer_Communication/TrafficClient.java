@@ -17,7 +17,13 @@ public class TrafficClient {
                     String serverMessage;
                     while ((serverMessage = serverIn.readLine()) != null) {
                         if (serverMessage.equals("END_OF_RESPONSE")) {
-                            // Fin de la réponse, affichez l'invite
+                            System.out.println("------------------------------");
+                            System.out.println("Here are the possible commands and there format");
+                            System.out.println("1. PATH CityOne:CityTwo");
+                            System.out.println("2. UPDATE CityOne:CityTwo:Time reason (reason is optional)");
+                            System.out.println("3. EXIT");
+                            System.out.println("Here are the cities available, Genève, Lausanne, Berne, Neuchatel, Montreux");
+                            System.out.println("------------------------------");
                             System.out.print("Enter command: ");
                         } else {
                             // Affiche le message du serveur
