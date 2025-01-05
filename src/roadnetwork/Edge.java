@@ -1,44 +1,77 @@
 package roadnetwork;
 
-// Classe représentant une arête dans le graphe
+/**
+ * Represents an edge in the graph, connecting two nodes with a travel time.
+ */
 public class Edge {
-    private final Node from; // Nœud source
-    private final Node to;   // Nœud destination
-    private double travelTime; // Temps de trajet entre les deux nœuds
-    private String changeReason;
+    private final Node from; // The source node.
+    private final Node to; // The destination node.
+    private double travelTime; // The travel time between the source and destination nodes.
+    private String changeReason; // Reason for travel time changes, if applicable.
 
-    public void setChangeReason(String changeReason) {
-        this.changeReason = changeReason;
-    }
-
-    // Constructeur : Initialise une arête avec les nœuds source/destination et le temps de trajet
+    /**
+     * Constructs an edge with specified source, destination, and travel time.
+     *
+     * @param from       The source node.
+     * @param to         The destination node.
+     * @param travelTime The travel time between the nodes.
+     */
     public Edge(Node from, Node to, double travelTime) {
         this.from = from;
         this.to = to;
         this.travelTime = travelTime;
     }
 
-    // Retourne le nœud source de l'arête
+    /**
+     * Sets the reason for a travel time change.
+     *
+     * @param changeReason The reason for the change.
+     */
+    public void setChangeReason(String changeReason) {
+        this.changeReason = changeReason;
+    }
+
+    /**
+     * Gets the source node of the edge.
+     *
+     * @return The source node.
+     */
     public Node getFrom() {
         return from;
     }
 
-    // Retourne le nœud destination de l'arête
+    /**
+     * Gets the destination node of the edge.
+     *
+     * @return The destination node.
+     */
     public Node getTo() {
         return to;
     }
 
-    // Retourne le temps de trajet de l'arête
+    /**
+     * Gets the travel time for the edge.
+     *
+     * @return The travel time.
+     */
     public double getTravelTime() {
         return travelTime;
     }
 
-    // Modifie le temps de trajet de l'arête
+    /**
+     * Sets the travel time for the edge.
+     *
+     * @param travelTime The new travel time.
+     */
     public void setTravelTime(double travelTime) {
         this.travelTime = travelTime;
     }
 
-    // Représentation en chaîne de caractères de l'arête (utile pour le débogage)
+    /**
+     * Provides a string representation of the edge for debugging.
+     *
+     * @return A string representation of the edge.
+     */
     @Override
     public String toString() {
         return "Edge{" + "from=" + from + ", to=" + to + ", travelTime=" + travelTime + '}';

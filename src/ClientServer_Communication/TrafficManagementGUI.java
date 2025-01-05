@@ -12,28 +12,40 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * A graphical user interface (GUI) for managing traffic operations.
+ * Provides functionality for path calculation and travel time updates.
+ */
 public class TrafficManagementGUI extends JFrame {
-    private JTextArea pathResultArea;
-    private GraphPanel graphPanel;
-    private Socket socket;
-    private PrintWriter serverOut;
-    private BufferedReader serverIn;
-    private String lastUpdateStart;
-    private String lastUpdateEnd;
-    private String lastUpdateDistance;
+    private JTextArea pathResultArea; // Displays results for path calculations and updates.
+    private GraphPanel graphPanel; // Custom panel for visualizing the graph.
+    private Socket socket; // Socket for communicating with the server.
+    private PrintWriter serverOut; // Output stream for sending commands to the server.
+    private BufferedReader serverIn; // Input stream for receiving responses from the server.
+    private String lastUpdateStart; // Stores the start node for the last update request.
+    private String lastUpdateEnd; // Stores the end node for the last update request.
+    private String lastUpdateDistance; // Stores the travel time for the last update request.
 
+    /**
+     * Constructs the TrafficManagementGUI with the specified graph.
+     *
+     * @param graph The graph to be displayed and managed in the GUI.
+     */
     public TrafficManagementGUI(Graph graph) {
         setTitle("Traffic Management System");
         setSize(1000, 800);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
 
+        // Add a panel for path calculation controls.
         JPanel pathPanel = createPathPanel(graph);
         add(pathPanel, BorderLayout.WEST);
 
+        // Add a panel for updating travel time.
         JPanel updatePanel = createUpdatePanel(graph);
         add(updatePanel, BorderLayout.EAST);
 
+        // Add a text area to display results of commands.
         pathResultArea = new JTextArea();
         pathResultArea.setEditable(false);
         pathResultArea.setFont(new Font("Arial", Font.BOLD, 16));
@@ -42,12 +54,15 @@ public class TrafficManagementGUI extends JFrame {
         pathResultArea.setBorder(BorderFactory.createTitledBorder("Result"));
         add(new JScrollPane(pathResultArea), BorderLayout.CENTER);
 
+        // Add a custom panel to visualize the graph.
         graphPanel = new GraphPanel(graph);
         add(graphPanel, BorderLayout.SOUTH);
         graphPanel.repaint();
 
+        // Connect to the server.
         connectToServer("localhost", 45000);
 
+        // Ensure the connection is closed properly when the window is closed.
         addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
@@ -56,11 +71,19 @@ public class TrafficManagementGUI extends JFrame {
         });
     }
 
+    /**
+     * Connects to the server for communication.
+     *
+     * @param host The server's hostname.
+     * @param port The port number to connect to on the server.
+     */
     private void connectToServer(String host, int port) {
         try {
             socket = new Socket(host, port);
             serverOut = new PrintWriter(socket.getOutputStream(), true);
             serverIn = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+
+            // Start a thread to handle server responses.
             new Thread(() -> {
                 try {
                     List<String> responseBuffer = new ArrayList<>();
@@ -85,6 +108,9 @@ public class TrafficManagementGUI extends JFrame {
         }
     }
 
+    /**
+     * Closes the connection to the server.
+     */
     private void closeConnection() {
         if (serverOut != null) {
             serverOut.println("EXIT");
@@ -93,14 +119,22 @@ public class TrafficManagementGUI extends JFrame {
             if (socket != null) {
                 socket.close();
             }
-        } catch (IOException e) {}
+        } catch (IOException e) {
+            // Ignore exceptions during socket closure.
+        }
     }
 
+    /**
+     * Processes the server's response and updates the result area.
+     *
+     * @param lines The lines received from the server.
+     */
     private void processServerResponse(List<String> lines) {
         String shortestPathLine = null;
         String totalDistanceLine = null;
         boolean updateSuccess = false;
 
+        // Parse the server's response for specific details.
         for (String l : lines) {
             if (l.startsWith("Shortest path from ")) {
                 shortestPathLine = l;
@@ -112,6 +146,8 @@ public class TrafficManagementGUI extends JFrame {
                 updateSuccess = true;
             }
         }
+
+        // Display the parsed response in the result area.
         if (shortestPathLine != null && totalDistanceLine != null) {
             String formatted = formatPathResponse(shortestPathLine, totalDistanceLine);
             appendToResultArea(formatted);
@@ -125,6 +161,13 @@ public class TrafficManagementGUI extends JFrame {
         }
     }
 
+    /**
+     * Formats the response for a path calculation into a readable string.
+     *
+     * @param shortestPathLine The line describing the shortest path.
+     * @param totalDistanceLine The line describing the total distance.
+     * @return A formatted string containing the path details.
+     */
     private String formatPathResponse(String shortestPathLine, String totalDistanceLine) {
         String prefix = "Shortest path from ";
         if (!shortestPathLine.startsWith(prefix)) {
@@ -148,6 +191,12 @@ public class TrafficManagementGUI extends JFrame {
         return "PATH from " + fromTo + "\n" + sbPath + "\n" + totalDistanceLine;
     }
 
+    /**
+     * Creates a panel for path calculation controls.
+     *
+     * @param graph The graph instance.
+     * @return The created JPanel for path options.
+     */
     private JPanel createPathPanel(Graph graph) {
         JPanel panel = new JPanel();
         panel.setLayout(new GridLayout(5, 1, 10, 10));
@@ -176,6 +225,12 @@ public class TrafficManagementGUI extends JFrame {
         return panel;
     }
 
+    /**
+     * Creates a panel for travel time update controls.
+     *
+     * @param graph The graph instance.
+     * @return The created JPanel for update options.
+     */
     private JPanel createUpdatePanel(Graph graph) {
         JPanel panel = new JPanel();
         panel.setLayout(new GridLayout(6, 1, 10, 10));
@@ -219,73 +274,37 @@ public class TrafficManagementGUI extends JFrame {
         return panel;
     }
 
+    /**
+     * Retrieves a list of city names from the graph.
+     *
+     * @param graph The graph instance.
+     * @return An array of city names.
+     */
     private String[] getCities(Graph graph) {
         return graph.getNodes().stream().map(Node::getId).toArray(String[]::new);
     }
 
+    /**
+     * Appends a message to the result area in the GUI.
+     *
+     * @param msg The message to append.
+     */
     private void appendToResultArea(String msg) {
         SwingUtilities.invokeLater(() -> {
             pathResultArea.append(msg + "\n");
         });
     }
 
+    /**
+     * The main method to start the GUI application.
+     *
+     * @param args Command-line arguments.
+     */
     public static void main(String[] args) {
         Graph sharedGraph = Server.graph;
         SwingUtilities.invokeLater(() -> {
             TrafficManagementGUI gui = new TrafficManagementGUI(sharedGraph);
             gui.setVisible(true);
         });
-    }
-}
-
-class GraphPanel extends JPanel {
-    private Graph graph;
-    private final int nodeRadius = 20;
-    private final Map<String, Point> nodePositions;
-
-    public GraphPanel(Graph graph) {
-        this.graph = graph;
-        setPreferredSize(new Dimension(800, 400));
-        this.nodePositions = initializeNodePositions();
-    }
-
-    private Map<String, Point> initializeNodePositions() {
-        Map<String, Point> positions = new HashMap<>();
-        positions.put("Genève", new Point(50, 200));
-        positions.put("Lausanne", new Point(250, 100));
-        positions.put("Berne", new Point(550, 100));
-        positions.put("Neuchatel", new Point(250, 300));
-        positions.put("Montreux", new Point(550, 300));
-        return positions;
-    }
-
-    @Override
-    protected void paintComponent(Graphics g) {
-        super.paintComponent(g);
-        Graphics2D g2d = (Graphics2D) g;
-        g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-
-        g2d.setStroke(new BasicStroke(2));
-        g2d.setColor(Color.GRAY);
-        for (Node from : graph.getNodes()) {
-            Point fromPos = nodePositions.get(from.getId());
-            for (Edge edge : graph.getEdges(from)) {
-                Node to = edge.getTo();
-                Point toPos = nodePositions.get(to.getId());
-                if (fromPos != null && toPos != null) {
-                    g2d.drawLine(fromPos.x, fromPos.y, toPos.x, toPos.y);
-                }
-            }
-        }
-
-        for (Node node : graph.getNodes()) {
-            Point pos = nodePositions.get(node.getId());
-            if (pos != null) {
-                g2d.setColor(Color.BLUE);
-                g2d.fillOval(pos.x - nodeRadius / 2, pos.y - nodeRadius / 2, nodeRadius, nodeRadius);
-                g2d.setColor(Color.BLACK);
-                g2d.drawString(node.getId(), pos.x - nodeRadius, pos.y - nodeRadius);
-            }
-        }
     }
 }

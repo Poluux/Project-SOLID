@@ -1,62 +1,97 @@
 package roadnetwork;
+
 import java.util.*;
 
-// Classe représentant le graphe contenant les nœuds et arêtes
+/**
+ * Represents a graph with nodes and edges.
+ * Provides methods to manage nodes, edges, and travel times.
+ */
 public class Graph {
-    private final Map<Node, List<Edge>> adjacencyList = new HashMap<>();
-    private final Map<Edge, Double> defaultTravelTimes = new HashMap<>(); // Temps par défaut
+    private final Map<Node, List<Edge>> adjacencyList = new HashMap<>(); // Stores edges for each node.
+    private final Map<Edge, Double> defaultTravelTimes = new HashMap<>(); // Stores default travel times for edges.
 
-    // Ajoute un nœud au graphe
+    /**
+     * Adds a node to the graph.
+     *
+     * @param node The node to add.
+     */
     public void addNode(Node node) {
         adjacencyList.putIfAbsent(node, new ArrayList<>());
     }
 
-    // Ajoute une arête entre deux nœuds avec un temps de trajet par défaut
+    /**
+     * Adds an edge between two nodes with a specified travel time.
+     *
+     * @param from       The source node.
+     * @param to         The destination node.
+     * @param travelTime The travel time for the edge.
+     */
     public void addEdge(Node from, Node to, double travelTime) {
         Edge edge = EdgeFactory.createEdge(from, to, travelTime);
         adjacencyList.get(from).add(edge);
-        defaultTravelTimes.put(edge, travelTime); // Stocker le temps par défaut
+        defaultTravelTimes.put(edge, travelTime); // Store the default travel time.
     }
 
-    // Récupère les arêtes sortantes d'un nœud donné
+    /**
+     * Retrieves the list of edges for a specific node.
+     *
+     * @param node The node whose edges are to be retrieved.
+     * @return A list of edges originating from the node.
+     */
     public List<Edge> getEdges(Node node) {
         return adjacencyList.getOrDefault(node, Collections.emptyList());
     }
 
-    // Retourne l'ensemble des nœuds présents dans le graphe
+    /**
+     * Retrieves all nodes in the graph.
+     *
+     * @return A set of all nodes.
+     */
     public Set<Node> getNodes() {
         return adjacencyList.keySet();
     }
 
-    // Met à jour le temps de trajet entre deux nœuds
+    /**
+     * Updates the travel time for an edge between two nodes.
+     *
+     * @param from          The source node.
+     * @param to            The destination node.
+     * @param newTravelTime The new travel time.
+     * @param changeReason  The reason for the update.
+     * @return True if the edge was found and updated, false otherwise.
+     */
     public boolean updateTravelTime(Node from, Node to, double newTravelTime, String changeReason) {
         for (Edge edge : adjacencyList.get(from)) {
             if (edge.getTo().equals(to)) {
                 edge.setTravelTime(newTravelTime);
                 edge.setChangeReason(changeReason);
-                return true; // Mise à jour réussie
+                return true; // Successfully updated.
             }
         }
-        return false; // Arête introuvable
+        return false; // Edge not found.
     }
 
-    // Réinitialise les temps de trajet à leurs valeurs par défaut
+    /**
+     * Resets all travel times to their default values.
+     */
     public void resetTravelTimes() {
         for (Map.Entry<Edge, Double> entry : defaultTravelTimes.entrySet()) {
             entry.getKey().setTravelTime(entry.getValue());
         }
     }
 
-    // Affiche le graphe dans un format lisible
+    /**
+     * Prints the graph in a readable format to the console.
+     */
     public void printGraph() {
-        System.out.println("\n=== Représentation du Graphe ===");
+        System.out.println("\n=== Graph Representation ===");
         for (Map.Entry<Node, List<Edge>> entry : adjacencyList.entrySet()) {
             Node fromNode = entry.getKey();
             List<Edge> edges = entry.getValue();
 
             System.out.print(fromNode.getId() + " : ");
             if (edges.isEmpty()) {
-                System.out.println("Aucune connexion");
+                System.out.println("No connections");
             } else {
                 for (Edge edge : edges) {
                     System.out.print("→ " + edge.getTo().getId() + " (" + edge.getTravelTime() + " min) ");
@@ -66,7 +101,11 @@ public class Graph {
         }
     }
 
-    // Représentation en chaîne de caractères du graphe (utile pour le débogage)
+    /**
+     * Provides a string representation of the graph for debugging.
+     *
+     * @return A string representation of the graph.
+     */
     @Override
     public String toString() {
         return "Graph{" + "adjacencyList=" + adjacencyList + '}';

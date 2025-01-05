@@ -2,21 +2,36 @@ package roadnetwork;
 
 import java.util.Objects;
 
-// Classe représentant un nœud dans le graphe
+/**
+ * Represents a node in the graph, identified by a unique ID.
+ */
 public class Node {
-    private final String id; // Identifiant unique du nœud
+    private final String id; // Unique identifier for the node.
 
-    // Constructeur : Initialise un nœud avec un identifiant
+    /**
+     * Constructs a node with the specified ID.
+     *
+     * @param id The unique identifier for the node.
+     */
     public Node(String id) {
         this.id = id;
     }
 
-    // Retourne l'identifiant du nœud
+    /**
+     * Retrieves the ID of the node.
+     *
+     * @return The node's ID.
+     */
     public String getId() {
         return id;
     }
 
-    // Vérifie si deux nœuds sont identiques en comparant leurs identifiants
+    /**
+     * Checks if two nodes are equal based on their IDs.
+     *
+     * @param obj The object to compare.
+     * @return True if the IDs match; false otherwise.
+     */
     @Override
     public boolean equals(Object obj) {
         if (this == obj) return true;
@@ -25,13 +40,21 @@ public class Node {
         return Objects.equals(id, node.id);
     }
 
-    // Génère un code de hachage unique basé sur l'identifiant du nœud
+    /**
+     * Generates a hash code for the node based on its ID.
+     *
+     * @return The hash code.
+     */
     @Override
     public int hashCode() {
         return Objects.hash(id);
     }
 
-    // Représentation en chaîne de caractères du nœud (utile pour le débogage)
+    /**
+     * Provides a string representation of the node for debugging.
+     *
+     * @return A string representation of the node.
+     */
     @Override
     public String toString() {
         return "Node{" + "id='" + id + '\'' + '}';
