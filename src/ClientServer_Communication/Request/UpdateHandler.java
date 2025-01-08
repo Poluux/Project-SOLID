@@ -41,7 +41,12 @@ public class UpdateHandler implements RequestHandler {
         // Split the time and reason part.
         String[] distanceCommSeparator = parts[2].split(" ", 2);
         String distanceValue = distanceCommSeparator[0]; // Travel time value.
-        String reason = distanceCommSeparator[1].trim(); // Reason for the update.
+        String reason;
+
+        if (distanceCommSeparator.length > 1)
+            reason = distanceCommSeparator[1].trim();
+        else
+            reason = "no reason given";
 
         // Validate the travel time value.
         double newDistance;
